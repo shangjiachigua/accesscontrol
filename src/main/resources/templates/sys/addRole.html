@@ -1,0 +1,79 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">角色名称</label>
+            <div class="layui-input-block">
+                <input type="text" maxlength="15" name="roleName" lay-verify="required" lay-reqtext="角色名称不能为空" placeholder="请输入角色名称" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="remark" maxlength="100" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("是否确认提交？", {
+                title: '提示信息：',
+                btn:["确认","取消"],
+                btn2:function () {
+                    layer.close(index);
+                    layer.close(parentIndex);
+                }
+            }, function () {
+                var field = data.field;
+                $.ajax({
+                    url:"${request.contextPath}/sys/role/addRole",
+                    type:"post",
+                    dataType:"json",
+                    data:{"roleName":field.roleName,"remark":field.remark},
+                    success:function (result) {
+                        layer.alert(result.msg, {
+                            title: '提示信息：',
+                            btn: ["确认" ],
+                            yes:function (i) {
+                                layer.close(i);
+                                if(result.code == "0000"){
+                                    $("button#searchButton").trigger("click");
+                                }
+                            }
+                        });
+                    }
+                })
+                // 关闭弹出层
+                layer.close(index);
+                layer.close(parentIndex);
+
+            });
+
+
+            return false;
+        });
+
+    });
+</script>

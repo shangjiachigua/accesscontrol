@@ -1,0 +1,10 @@
+@charset "utf-8";
+body,html{width:100%; min-width:1200px; background-color:#F0EFF5; color:#323232}
+/***   民生管理-房屋信息   ***/
+.head-town-con{ position: fixed;top:0;  height:100px; line-height:100px; width:100%; min-width:1200px; background-color:#fff; z-index: 3; }
+.head-town-con div{ height: 100px; }
+.head-town-con p span{  font-size:34px; font-weight: bold; letter-spacing: 15px; color:#1D9BF7; }
+.head-town-con .head-right{ position: absolute; right: 20px; top:0; display: flex; align-items: center; justify-content: center; }
+.head-town-con .head-right span{ margin:0 15px; font-size: 14px; }
+.head-town-con .head-right span:last-child{ font-size: 16px; }
+.head-town-con .head-right img{ width: 50px; border-radius: 50%; vertical-align:-20px;  }

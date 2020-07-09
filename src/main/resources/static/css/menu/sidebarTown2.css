@@ -1,0 +1,38 @@
+@charset "utf-8";
+body,html{width:100%; min-width:1200px; background-color:#F0EFF5; color:#323232}
+/***   民生管理-房屋信息   ***/
+.head-town-con{ position: fixed;top:0;  height:100px; line-height:100px; width:100%; min-width:1200px; background-color:#fff; z-index: 3; }
+.head-town-con div{ height: 100px; }
+.head-town-con p.left{  font-size:30px; font-weight: bold; letter-spacing: 15px; color:#0176FE; }
+.head-town-con span{ margin:0 20px }
+/*.head-town-con p.right{ 
+	width: 235px; 
+	display: flex; 
+	align-items: center;
+	font-size:16px;	
+}*/
+.address-search{ width:350px; }
+.address-search li{ float:left; background-color:#f8f8f8; box-sizing: border-box; border:1px solid #E9E9E9; height:40px; line-height: 40px; margin-top:30px;;  }
+.address-search li:nth-of-type(1){ width:80%; border-right:0; border-top-left-radius:20px; border-bottom-left-radius:20px; }
+.address-search li:nth-of-type(2){ width:20%; text-align: center; border-top-right-radius:20px; border-bottom-right-radius:20px; }
+.address-search li input{ display: block; width:100%; box-sizing: border-box; height:30px; line-height: 30px;margin-top:5px; border-radius: 15px; background:#f8f8f8; outline: none; padding:0 15px }
+
+.address-search li img{ max-width:20px; vertical-align: -2px;  }
+.left-sidebar{ position: fixed; top:110px; left:0; width:18%; }
+.left-sidebar-con{ padding: 10px 10px 10px 20px; }
+.left-sidebar-con article p{ border-bottom:1px solid #ececec; padding:15px 25px;}
+.left-sidebar-con dt a{  display: block; color:#323232; padding-left:10px; font-weight: bold; letter-spacing: 2px; height:60px; line-height:60px; overflow: hidden; }
+.left-sidebar-con dl dt img{ width: 20px; vertical-align: -3px;position: relative;top: 20px;}
+.left-sidebar-con dt i{ color:#CCCCCC; font-size:22px; }
+.left-sidebar-con dt i,.left-sidebar-con dt span{ float:left; margin-left:20px;}
+.left-sidebar-con dl li a{ display: block; padding-left:80px; height: 50px; line-height: 50px; position: relative }
+.left-sidebar-con dl li a.current{ background-color:#C2DEFF; color:#0176FE }
+.left-sidebar-con dl li a.current::after{
+	content: '';
+	display: block;
+	border-left:3px solid #0176FE;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}

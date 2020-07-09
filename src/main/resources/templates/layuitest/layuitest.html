@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>华润置地徐州公司工程管理部质量检查专属抽取系统</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../layui/css/modules/layer/default/layer.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">欢迎，陈存</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    庙道口最猛的虎
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">日常办公</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">抽取系统</a></dd>
+                        <dd><a href="javascript:;">待实现。。。</a></dd>
+                        <dd><a href="javascript:;">待实现。。。</a></dd>
+                        <dd><a href="">待实现。。。</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">解决方案</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">待实现。。。</a></dd>
+                        <dd><a href="javascript:;">待实现。。。</a></dd>
+                        <dd><a href="">待实现。。。</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <form class="layui-form" action="" id="content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="display:inline-block;width:200px;"><h1>抽取的楼层信息</h1></label>
+                </div>
+                <div>
+                    <input type="file" id="importFile">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">抽取种类：</label>
+                    <div class="layui-input-block ww">
+                        <input type="radio" name="category" value="主体" title="主体" checked>
+                        <input type="radio" name="category" value="砌筑" title="砌筑">
+                        <input type="radio" name="category" value="抹灰" title="抹灰">
+                    </div>
+                </div>
+                <div id="reload">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">楼号：</label>
+                        <div class="layui-input-block">
+                            <input type="number" id="floor1" name="title" lay-verify="title" autocomplete="off" placeholder="请输入楼号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">初始楼层：</label>
+                        <div class="layui-input-block">
+                            <input type="number" id="start1" name="title" lay-verify="title" autocomplete="off" placeholder="请输入初始楼层" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">最终楼层：</label>
+                        <div class="layui-input-block">
+                            <input type="number" id="end1" name="title" lay-verify="title" autocomplete="off" placeholder="请输入最终楼层" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 20px; text-align: center;">
+            <div>
+                <button type="button" class="layui-btn layui-btn-warm" id="shut">抽取</button>
+                <button type="button" class="layui-btn layui-btn-normal" id="add">新增</button>
+                <button type="button" class="layui-btn layui-btn-danger" id="delete">删除</button>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        Copyright © 2018 idcs.vip All Rights Reserved.
+    </div>
+</div>
+<script src="../layui/layui.js"></script>
+<script src="../js/jquery-2.1.3.min.js"></script>
+<script src="../layui/lay/modules/layer.js"></script>
+<script>
+    //JavaScript代码区域
+    layui.use('form', function () {
+
+    });
+
+    var index = 1;
+
+    $(function () {
+        $("#importFile").change(function () {
+            testFile();
+        });
+
+        $(".ww").click(function () {
+            reloadInput();
+        });
+
+
+        $("#shut").click(function () {
+            console.log(index);
+            if (index == 1) {
+                var category = $("input[name='category']:checked").val();
+                var arr = new Array();
+                var floor = $("#floor" + index + "").val();
+                var start = $("#start" + index + "").val();
+                var end = $("#end" + index + "").val();
+                if (isNull($("#floor" + index + "").val()) || isNull(start) || isNull(end)) {
+                    layer.alert("请输入完整信息");
+                    return;
+                }
+                arr = randomArr(start, end, 3);
+
+                layer.confirm('确定抽取？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    layer.confirm("你抽的种类是" + category + ",抽到的是" + floor + "号楼第" + arr[0] + "层和" + "第" + arr[1] + "层和" + "第" + arr[2] + "层", {icon: 1});
+                }, function () {
+                    layer.msg('已取消？', {icon: 3});
+                });
+                return;
+            }
+
+            if (index == 2) {
+                var category = $("input[name='category']:checked").val();
+                var arr = new Array();
+                var result = null;
+                for (var i = 1; i <= index; i++) {
+                    result = new Object();
+                    result.floor = $("#floor" + i + "").val();
+                    var start = $("#start" + i + "").val();
+                    var end = $("#end" + i + "").val();
+                    if (isNull($("#floor" + i + "").val()) || isNull(start) || isNull(end)) {
+                        layer.alert("请输入完整信息");
+                        return;
+                    }
+                    result.random = randomFun(Number(start), Number(end));
+                    arr.push(result);
+                }
+                result = new Object();
+                //随机数组的下标
+                var addRandom = randomFun(1, index + 1)
+                result.floor = $("#floor" + addRandom + "").val();
+                var addStart = $("#start" + addRandom + "").val();
+                var addEnd = $("#end" + addRandom + "").val();
+                result.random = randomFun(Number(addStart), Number(addEnd));
+                arr.push(result);
+
+                layer.confirm('确定抽取？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    layer.confirm("你抽的种类是" + category + ",抽到的是" + arr[0].floor + "号楼第" + arr[0].random + "层和" +
+                        arr[1].floor + "号楼第" + arr[1].random + "层和" + arr[2].floor + "号楼第" + arr[2].random + "层", {icon: 1});
+                }, function () {
+                    layer.msg('已取消？', {icon: 3});
+                });
+                return;
+            }
+            var category = $("input[name='category']:checked").val();
+            var arr = new Array();
+            var result = null;
+            for (var i = 1; i <= index; i++) {
+                result = new Object();
+                result.floor = $("#floor" + i + "").val();
+                var start = $("#start" + i + "").val();
+                var end = $("#end" + i + "").val();
+                if (isNull($("#floor" + i + "").val()) || isNull(start) || isNull(end)) {
+                    layer.alert("请输入完整信息");
+                    return;
+                }
+                result.random = randomFun(Number(start), Number(end));
+                arr.push(result);
+            }
+
+            var newarr = shuffle(arr);
+            newarr.splice(3);
+
+
+            layer.confirm('确定抽取？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                layer.confirm("你抽的种类是" + category + ",抽到的是" + newarr[0].floor + "号楼第" + newarr[0].random + "层和" +
+                    newarr[1].floor + "号楼第" + newarr[1].random + "层和" + newarr[2].floor + "号楼第" + newarr[2].random + "层", {icon: 1});
+            }, function () {
+                layer.msg('已取消？', {icon: 3});
+            });
+
+            /*     layer.confirm("你抽到的是" + newarr[0].floor + "号楼第" + newarr[0].random + "层和" +
+                     newarr[1].floor + "号楼第" + newarr[1].random + "层和" + newarr[2].floor + "号楼第" + newarr[2].random + "层");*/
+
+        });
+
+        $("#add").click(function () {
+            index++;
+            var str = "";
+            str += "<div class='layui-form-item group" + index + "'>\n" +
+                "                    <label class=\"layui-form-label\">楼号：</label>\n" +
+                "                    <div class=\"layui-input-block\">\n" +
+                "                        <input type=\"number\" id='floor" + index + "' name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入楼号\" class=\"layui-input\">\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "                <div class='layui-form-item group" + index + "'>\n" +
+                "                    <label class=\"layui-form-label\">初始楼层：</label>\n" +
+                "                    <div class=\"layui-input-block\">\n" +
+                "                        <input type=\"number\" id='start" + index + "' name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入初始楼层\" class=\"layui-input\">\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "                <div class='layui-form-item group" + index + "'>\n" +
+                "                    <label class=\"layui-form-label\">最终楼层：</label>\n" +
+                "                    <div class=\"layui-input-block\">\n" +
+                "                        <input type=\"number\" id='end" + index + "' name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入最终楼层\" class=\"layui-input\">\n" +
+                "                    </div>\n" +
+                "                </div>"
+
+            $("#reload").append(str);
+
+        });
+
+        $("#delete").click(function () {
+            $(".group" + index + "").remove();
+            if (index >= 2) {
+                index--;
+            }
+        });
+    });
+
+    function randomFun(min, max) {
+        var random = Math.floor(Math.random() * (max - min) + min);
+        return random;
+    }
+
+    function shuffle(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len - 1; i++) {
+            var index = parseInt(Math.random() * (len - i));
+            var temp = arr[index];
+            arr[index] = arr[len - i - 1];
+            arr[len - i - 1] = temp;
+        }
+        return arr;
+    }
+
+    function isNull(value) {
+        return value == null || value === "" || value === undefined;
+    }
+
+
+    /** len生成数组的长度，min生成数最小值，max生成数的最大值 **/
+    function randomArr(min, max, len) {
+        if ((max - min) < len) { //可生成数的范围小于数组长度
+            return null;
+        }
+        var hash = [];
+
+        while (hash.length < len) {
+            var num = randomFun(Number(min), Number(max));
+            if (hash.indexOf(num) == -1) {
+                hash.push(num);
+            }
+        }
+        return hash;
+    }
+
+    function reloadInput() {
+        var str = "";
+        str += "<div class=\"layui-form-item\">\n" +
+            "                        <label class=\"layui-form-label\">楼号：</label>\n" +
+            "                        <div class=\"layui-input-block\">\n" +
+            "                            <input type=\"number\" id=\"floor1\" name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入楼号\" class=\"layui-input\">\n" +
+            "                        </div>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"layui-form-item\">\n" +
+            "                        <label class=\"layui-form-label\">初始楼层：</label>\n" +
+            "                        <div class=\"layui-input-block\">\n" +
+            "                            <input type=\"number\" id=\"start1\" name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入初始楼层\" class=\"layui-input\">\n" +
+            "                        </div>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"layui-form-item\">\n" +
+            "                        <label class=\"layui-form-label\">最终楼层：</label>\n" +
+            "                        <div class=\"layui-input-block\">\n" +
+            "                            <input type=\"number\" id=\"end1\" name=\"title\" lay-verify=\"title\" autocomplete=\"off\" placeholder=\"请输入最终楼层\" class=\"layui-input\">\n" +
+            "                        </div>\n" +
+            "                    </div>\n" +
+            "                </div>";
+        $("#reload").empty();
+        $("#reload").html(str);
+        this.index = 1;
+    }
+
+    function testFile() {
+       var file =  $("#importFile")[0].files[0];
+       console.log(file,file.name);
+    }
+
+</script>
+</body>
+</html>

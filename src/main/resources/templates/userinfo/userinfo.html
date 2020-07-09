@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/headCss.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/leftSidebar.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/rightCon.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/thesame.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/page.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/popUp.css"/>
+    <style type="text/css">
+    </style>
+    <script>
+        var ishasPermissionEdit = false;
+        var ishasPermissionDelete = false;
+        var ishasPermissionAll = false;
+    </script>
+</head>
+<body>
+
+<section class="">
+    <!--right-Sidebar-con-->
+    <div class="right-Sidebar-con border_box">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="userName" class="form-control pr30px" placeholder="请输入姓名进行搜索">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="queryAreaPage(1)">查询</p>
+                            </div>
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="addAreaLayerOpen()">新增</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table" id="main_table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>照片</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>公司</th>
+                    <th>职位</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <shiro:hasPermission name="area_edit">
+                    <script>
+                        ishasPermissionEdit = true;
+                        ishasPermissionDelete = false;
+                        ishasPermissionAll = false;
+                    </script>
+                </shiro:hasPermission>
+                <shiro:hasPermission name="area_delete">
+                    <script>
+                        ishasPermissionEdit = false;
+                        ishasPermissionDelete = true;
+                        ishasPermissionAll = false;
+                    </script>
+                </shiro:hasPermission>
+                <shiro:hasAllPermissions name="area_edit,area_delete">
+                    <script>
+                        ishasPermissionEdit = false;
+                        ishasPermissionDelete = false;
+                        ishasPermissionAll = true;
+                    </script>
+                </shiro:hasAllPermissions>
+                <!-- <tr>
+                    <td>金沙江路</td>
+                    <td>2015-05-12 14:00:00</td>
+                    <td>
+                        <p class="blue operation"><span>查看</span>|<span>编辑</span>|<span>删除</span></p>
+                    </td>
+                </tr> -->
+                </tbody>
+            </table>
+            <!--currentpage="1" numbercount="100"-->
+            <div class="textCenter relative page-con">
+                <!-- <div class="lightGray pl15px pt15px form-inline">
+                    <p class="form-group">共300条记录</p>
+                    <p class="form-group">
+                        <select class="form-control">
+                            <option>5</option>
+                            <option>2</option>
+                        </select>
+                    </p>
+                    <p class="form-group">页</p>
+                </div> -->
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page"></ul>
+                <!-- <div><input type="text" id="oldBussinessLabelNamess" class="form-control" placeholder="标签名称"></div> -->
+            </div>
+            <!--<div><ul class="page" maxshowpageitem="5" pagelistcount="10"  id="page1"></ul></div>-->
+        </div>
+    </div>
+
+</section>
+
+
+<!--编辑弹层-->
+<input type="text" id="oldUserNo" value="" style="display: none;">
+<div id="pop-con-updateAreaName" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户编辑</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">照片</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div id="updateImgDiv">
+
+                            </div>
+                            <div id="updateImg">
+                                <!--<img id="newUserPhoto" src="#" width="50px" height="50px">-->
+                                <input type="file" id="userFileUpdate" name="file" class="hidden file"/>
+                                <img id="userImgUpdate" src="../img/file.png" style="width:90px;height:90px" class="filejs border-radius4"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">姓名</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newname" class="form-control" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">性别</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <!--                                <input type="text" id="sex" class="form-control" placeholder="片区名称">-->
+                                <select id="newsex">
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">手机号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newphone" class="form-control" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">公司</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newgongsi" class="form-control" placeholder="请输入公司名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">职位</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newzhiwei" class="form-control" placeholder="请输入职位">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="updateUserInfoByUserNo()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--添加弹层-->
+<div id="pop-con-addArea" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户添加</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">照片</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div id="addImgDiv">
+
+                            </div>
+                            <div>
+                                <!--<input type="file" id="img_file"><img src="" alt="" id="img_id" style="width: 100px">-->
+                                <input type="file" id="userFileAdd" name="file" class="hidden file"/>
+                                <img id="userImgAdd" src="../img/file.png" style="width:90px;height:90px" class="filejs border-radius4"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">姓名</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="name" class="form-control" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">性别</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <!--                                <input type="text" id="sex" class="form-control" placeholder="片区名称">-->
+                                <select id="sex">
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">手机号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="phone" class="form-control" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">公司</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="gongsi" class="form-control" placeholder="请输入公司名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">职位</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="zhiwei" class="form-control" placeholder="请输入职位">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="saveUserInfo()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-2.1.3.min.js"></script>
+<!--left-sidebar-town 左侧列表-->
+<script type="text/javascript" src="../js/sidebarTown.js"></script>
+<script src="../js/page.js"></script>
+<script src="../layer/layer.js"></script>
+<script>
+
+
+    $(function () {
+
+        $("#userImgAdd").click(function () {
+            $("#userFileAdd").click();
+        });
+
+        $("#userImgUpdate").click(function () {
+            $("#userFileUpdate").click();
+        });
+
+        $("#userFileAdd").on("change", readFile);
+        $("#userFileUpdate").on("change", readFile2);
+
+
+        //初始化
+        //分页查询
+        queryAreaPage(1);
+        //页数
+        // var GG = { queryAreaPage
+        //     "kk":function(mm){
+        //     }
+        // }
+        // $("#page").initPage(100,1,queryBussinessLabelPage;
+
+    });
+
+    function readFile() {
+        var input = document.getElementById("userFileAdd");
+        var dataArr = []; // 储存所选图片的结果(文件名和base64数据)
+        var fd = new FormData();
+        var iLen = this.files.length;
+        var index = 0;
+        for (var i = 0; i < iLen; i++) {
+            if (!input['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)) {　　//判断上传文件格式
+                layer.open({
+                    content: '上传的图片格式不正确，请重新选择'
+                    , skin: 'msg'
+                    //,time: 2 //2秒后自动关闭
+                });
+                return;
+            }
+            var reader = new FileReader();
+            reader.index = i;
+            //fd.append(i,this.files[i]);
+            fd.append("file", this.files[i]);
+            reader.readAsDataURL(this.files[i]);  //转成base64
+            reader.fileName = this.files[i].name;
+            //var imageName2=
+            sendImage(fd);//传送图片
+            //console.log("====="+imageName2);
+            reader.onload = function (e) {
+                var imgMsg = {
+                    name: this.fileName,//获取文件名
+                    base64: this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                }
+                dataArr.push(imgMsg);
+            }
+        }
+    }
+
+    function sendImage(fd) {
+        $.ajax({
+            url: '../pic/uploadImage',
+            type: 'post',
+            data: fd,//JSON.stringify(submitArr),
+            dataType: 'json',
+            cache: false,
+            processData: false,   //用FormData传fd时需有这两项     必要
+            contentType: false,    //必要
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var imageName = data.msg;
+                    //return imageName;
+                    result = '<img class="floatImage_add border-radius4" id="' + imageName + '"   src="' + imageName + '" style="width:90px;height:90px" "/><span style="right:65px"><img src="../img/close_01.png" class="block" height="20px" onclick="deleteImage(this)" ></span>';
+                    var div = document.createElement('div');
+                    div.className = "col-xs-3 relative addImgH2";
+                    div.innerHTML = result;
+                    document.getElementById('addImgDiv').appendChild(div);  　　//插入dom树
+                    // $("#imgadd").html(result);
+                    findImgSize();//判断图片数量
+                } else {
+                    layer.open({
+                        content: '图片上传失败 请重试'
+                        , skin: 'msg'
+                        //,time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        });
+        // return imageName;
+    }
+
+
+    function findImgSize() {
+        var imgLength = $("#addImgDiv").find(".addImgH2").length;  //判断长度是否大于
+        if (imgLength >= 1) {
+            $("#userImgAdd").css("display", "none");
+            //$("#addImageLabel").style.display="none";
+        } else {
+            $("#userImgAdd").css("display", "");
+        }
+    }
+
+    function deleteImage(obj) {
+        obj.parentNode.parentNode.remove(obj.parentNode.parentNode);//删除元素
+        findImgSize();
+        findImgSize2();
+    }
+
+
+    function findImgSize2() {
+        var imgLength = $("#updateImgDiv").find(".updateImgH2").length;  //判断长度是否大于
+        if (imgLength >= 1) {
+            $("#updateImg").css("display", "none");
+            //$("#addImageLabel").style.display="none";
+        } else {
+            $("#updateImg").css("display", "");
+        }
+    }
+
+    function readFile2() {
+        var input = document.getElementById("userFileUpdate");
+        var dataArr = []; // 储存所选图片的结果(文件名和base64数据)
+        var fd = new FormData();
+        var iLen = this.files.length;
+        var index = 0;
+        for (var i = 0; i < iLen; i++) {
+            if (!input['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)) {　　//判断上传文件格式
+                layer.open({
+                    content: '上传的图片格式不正确，请重新选择'
+                    , skin: 'msg'
+                    //,time: 2 //2秒后自动关闭
+                });
+                return;
+            }
+            var reader = new FileReader();
+            reader.index = i;
+            //fd.append(i,this.files[i]);
+            fd.append("file", this.files[i]);
+            reader.readAsDataURL(this.files[i]);  //转成base64
+            reader.fileName = this.files[i].name;
+            //var imageName2=
+            sendImage2(fd);//传送图片
+            //console.log("====="+imageName2);
+            reader.onload = function (e) {
+                var imgMsg = {
+                    name: this.fileName,//获取文件名
+                    base64: this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                }
+                dataArr.push(imgMsg);
+            }
+        }
+    }
+
+    function sendImage2(fd) {
+        $.ajax({
+            url: '../pic/uploadImage',
+            type: 'post',
+            data: fd,//JSON.stringify(submitArr),
+            dataType: 'json',
+            cache: false,
+            processData: false,   //用FormData传fd时需有这两项     必要
+            contentType: false,    //必要
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var imageName = data.msg;
+                    //return imageName;
+                    result = '<img class="floatImage_update border-radius4" id="' + imageName + '"   src="' + imageName + '" style="width:90px;height:90px" "/><span style="right:65px"><img src="../img/close_01.png" height="20px" class="block" onclick="deleteImage(this)" ></span>';
+
+                    var div = document.createElement('div');
+                    div.className = "col-xs-3 relative updateImgH2";
+                    div.innerHTML = result;
+                    document.getElementById('updateImgDiv').appendChild(div);  　　//插入dom树
+                    findImgSize2();//判断图片数量
+                } else {
+                    layer.open({
+                        content: '图片上传失败 请重试'
+                        , skin: 'msg'
+                        //,time: 2 //2秒后自动关闭
+                    });
+                }
+            }
+        });
+        // return imageName;
+    }
+
+
+    function queryAreaPage(currentPage) {
+        var pageSize = 10;
+        var userName = $("#userName").val();
+        var data = JSON.stringify({"userName": userName, "pageSize": pageSize, "currentPage": currentPage})
+        $.ajax({
+            url: "../userinfo/getUserInfoList",
+            type: "post",
+            dataType: "json",
+            data: data,
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            html += "<td style='width:15%'><img height='30px' src=" + data.pageList[i].userPhoto + "></td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userName + "</td>";
+                            if (data.pageList[i].userSex == 0) {
+                                html += "<td style='width:10%'>男</td>";
+                            } else {
+                                html += "<td style='width:10%'>女</td>";
+                            }
+                            html += "<td style='width:15%'>" + data.pageList[i].userPhone + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].corporateName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].position + "</td>";
+                            html += "<td>";
+                            //                  html += "<p class='blue operation'>";
+                            // html +="<span onclick=updateLayerOpen("+data.pageList[i].districtCode+'\,\''+data.pageList[i].districtName+"\')>编辑</span>";
+                            // html +="|";
+                            // html +="<span style='color:#ccc' onclick='deleteArea("+data.pageList[i].districtCode+")'>删除</span>";
+                            // html +="</p>";
+                            html += "<p class='blue operation'>";
+                            html += "<span onclick=updateLayerOpen('" + data.pageList[i].userNo + "','" + data.pageList[i].userPhoto + "','" + data.pageList[i].userName + "'" +
+                                ",'" + data.pageList[i].userSex + "','" + data.pageList[i].userPhone + "','" + data.pageList[i].corporateName + "'" +
+                                ",'" + data.pageList[i].position + "')>编辑</span>";
+                            html += "|";
+                            html += "<span onclick=deleteUserInfo('" + data.pageList[i].userNo + "')>删除</span>";
+                            html += "</p>";
+                            html += "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("table#main_table tbody").html(html);
+                    $("#page").initPage(data.totalCount, data.currentPage, queryAreaPage);
+                } else {
+                }
+            }
+        });
+    }
+
+
+    function deleteUserInfo(userNo) {
+
+        //eg1
+        layer.confirm('确定要删除此记录么', {
+            btn: ['确定', '取消'] //可以无限个按钮
+            , shadeClose: true //设置允许点遮罩关闭
+        }, function (index, layero) {
+
+            deleteUserInfoByUserNo(userNo);
+
+            $("#queryDistrictName").val("");
+            $("#areaList").val("");
+
+            queryAreaPage(1);
+
+            layer.close(index);
+        });
+    }
+
+    function deleteUserInfoByUserNo(userNo) {
+
+        $.ajax({
+            url: "../userinfo/deleteUserInfo",
+            type: "post",
+            dataType: "json",
+            data: {"userNo": userNo},
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function updateLayerOpen(userNo, userPhoto, userName, userSex, userPhone, corporateName, position) {
+        layerOpenOfUpdate(userNo, userPhoto, userName, userSex, userPhone, corporateName, position);
+    }
+
+    //修改弹层
+    function layerOpenOfUpdate(userNo, userPhoto, userName, userSex, userPhone, corporateName, position) {
+
+        $("#updateImgDiv").html("");//清空
+        findImgSize2();
+
+
+        $("#oldUserNo").val(userNo);
+        $("#newname").val(userName);
+        $("#newphone").val(userPhone);
+        $("#newsex").val(userSex);
+        $("#newgongsi").val(corporateName);
+        $("#newzhiwei").val(position);
+        $("#oldUserInfo").val(userNo);
+
+        if (!isNull(userPhoto)) {
+            result = '<img class="floatImage_update border-radius4" id="' + userPhoto + '"   src="' + userPhoto + '" style="width:90px;height:90px" "/><span style="right:65px"><img src="../img/close_01.png" width="20px" class="block" onclick="deleteImage(this)" ></span>';
+
+            var div = document.createElement('div');
+            div.className = "col-xs-3 relative updateImgH2";
+            div.innerHTML = result;
+            document.getElementById('updateImgDiv').appendChild(div);  　　//插入dom树
+            findImgSize2();//判断图片数量
+        }
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payCons' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("div#pop-con-updateAreaName"),
+            success: function () {
+
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+                // $(".filejs").click(function(){
+                // 	$(".file").click();
+                // })
+            },
+        });
+    }
+
+
+    function updateUserInfoByUserNo() {
+
+        var userNo = $("#oldUserNo").val();
+        var name = $("#newname").val();
+        var sex = $("#newsex").val();
+        var phone = $("#newphone").val();
+        var gongsi = $("#newgongsi").val();
+        var zhiwei = $("#newzhiwei").val();
+        var tags = $(".floatImage_update");
+
+        if (tags.length==0) {
+            layer.alert('请上传图片');
+            return;
+        }
+        var imgPath = tags[0].id;
+        if (isNull(name)) {
+            layer.alert('名字不能为空');
+            return;
+        }
+        if (isNull(sex)) {
+            layer.alert('请选择性别');
+            return;
+        }
+        if (isNull(phone)) {
+            layer.alert('请填写手机号');
+            return;
+        }
+
+        var formDate =
+            {
+                userNo:userNo,
+                userName: name,
+                userPhoto: imgPath,
+                userSex: sex,
+                userPhone: phone,
+                corporateName: gongsi,
+                position: zhiwei
+            };
+
+        $.ajax({
+            url: "../userinfo/updateUserInfo",
+            type: "post",
+            dataType: "json",
+            data: formDate,
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                    queryAreaPage(1);
+                    getLabels();//下拉框
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+
+    }
+
+
+    //-------------------------------------------查询---------------------------------------
+
+    //添加弹层
+    function addAreaLayerOpen() {
+
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payConsAdd' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("div#pop-con-addArea"),
+            success: function () {
+                $("#addNewAreaName").val("");
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+            },
+        });
+    }
+
+    function saveUserInfo() {
+        var name = $("#name").val();
+        var sex = $("#sex").val();
+        var phone = $("#phone").val();
+        var gongsi = $("#gongsi").val();
+        var zhiwei = $("#zhiwei").val();
+        var tags = $(".floatImage_add");
+        if (tags.length == 0) {
+            layer.alert('请上传图片');
+            return;
+        }
+        var imgPath = tags[0].id;
+        if (isNull(name)) {
+            layer.alert('名字不能为空');
+            return;
+        }
+        if (isNull(sex)) {
+            layer.alert('请选择性别');
+            return;
+        }
+        if (isNull(phone)) {
+            layer.alert('请填写手机号');
+            return;
+        }
+
+        var formDate =
+            {
+                userName: name,
+                userPhoto: imgPath,
+                userSex: sex,
+                userPhone: phone,
+                corporateName: gongsi,
+                position: zhiwei
+            };
+        $.ajax({
+            url: "../userinfo/saveUserInfo",
+            type: "post",
+            dataType: "json",
+            data: formDate,
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            $("#name").val("");
+                            $("#sex").val("");
+                            $("#phone").val("");
+                            $("#gongsi").val("");
+                            $("#zhiwei").val("");//清空
+                            layer.closeAll();
+                        }
+                    });
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function isNull(value) {
+        return value == null || value === "" || value === undefined;
+    }
+
+</script>
+</body>
+</html>
+

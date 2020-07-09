@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/headCss.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/leftSidebar.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/rightCon.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/thesame.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/page.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/popUp.css"/>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+
+<section class="">
+    <!--right-Sidebar-con-->
+    <div class="right-Sidebar-con border_box">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="equipmentName" class="form-control pr30px" placeholder="设备名称">
+                            </div>
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="assetNo" class="form-control pr30px" placeholder="固定资产编号">
+                            </div>
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="equipmentPro" class="form-control pr30px" placeholder="设备负责人">
+                            </div>
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="equipmentAddress" class="form-control pr30px" placeholder="设备安装地址">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="queryAreaPage(1)">查询</p>
+                            </div>
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="addAreaLayerOpen()">新增</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table" id="main_table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>固定资产编号</th>
+                    <th>设备名称</th>
+                    <th>设备型号</th>
+                    <th>设备负责人</th>
+                    <th>设备安装地址</th>
+                    <th>设备IP</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- <tr>
+                    <td>金沙江路</td>
+                    <td>2015-05-12 14:00:00</td>
+                    <td>
+                        <p class="blue operation"><span>查看</span>|<span>编辑</span>|<span>删除</span></p>
+                    </td>
+                </tr> -->
+                </tbody>
+            </table>
+            <!--currentpage="1" numbercount="100"-->
+            <div class="textCenter relative page-con">
+                <!-- <div class="lightGray pl15px pt15px form-inline">
+                    <p class="form-group">共300条记录</p>
+                    <p class="form-group">
+                        <select class="form-control">
+                            <option>5</option>
+                            <option>2</option>
+                        </select>
+                    </p>
+                    <p class="form-group">页</p>
+                </div> -->
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page"></ul>
+                <!-- <div><input type="text" id="oldBussinessLabelNamess" class="form-control" placeholder="标签名称"></div> -->
+            </div>
+            <!--<div><ul class="page" maxshowpageitem="5" pagelistcount="10"  id="page1"></ul></div>-->
+        </div>
+    </div>
+
+</section>
+
+
+<!--编辑弹层-->
+<input type="text" id="oldEquipmentNo" style="display: none;">
+<div id="pop-con-updateAreaName" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户编辑</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">固定资产编号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="assetNo3" class="form-control" placeholder="请输入固定资产编号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备名称</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentName3" class="form-control" placeholder="请输入设备名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备型号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentModel3" class="form-control" placeholder="请输入设备型号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备负责人</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentPro3" class="form-control" placeholder="请输入设备负责人">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">负责人联系电话</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentProPhone3" class="form-control" placeholder="请输入负责人联系电话">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备安装地址</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentAddress3" class="form-control" placeholder="请输入设备安装地址">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备IP</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentIp3" class="form-control" placeholder="请输入设备IP">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备序列号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentSeq3" class="form-control" placeholder="请输入设备序列号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装区</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="area3">
+                                    <option value="">请选择区域</option>
+                                    <option value="1">A区域</option>
+                                    <option value="2">B区域</option>
+                                    <option value="3">C区域</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装街道</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="streetNo3">
+                                    <option value="">请选择街道</option>
+                                    <option value="1">A街</option>
+                                    <option value="2">B街</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装小区</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="villageNo3">
+                                    <option value="">请选择小区</option>
+                                    <option value="1">A小区</option>
+                                    <option value="2">B小区</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-1">
+                        <label class="control-label blue">安装号/栋</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div>
+                            <input type="text" id="building3" class="form-control" placeholder="请输入安装号/栋">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-1">
+                        <label class="control-label blue">安装单元</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div>
+                            <input type="text" id="entrence3" class="form-control" placeholder="请输入安装单元">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="updateMDeviceInfoByNo()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--添加弹层-->
+<div id="pop-con-addArea" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户添加</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">固定资产编号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="assetNo2" class="form-control" placeholder="请输入固定资产编号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备名称</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentName2" class="form-control" placeholder="请输入设备名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备型号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentModel" class="form-control" placeholder="请输入设备型号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备负责人</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentPro2" class="form-control" placeholder="请输入设备负责人">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">负责人联系电话</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentProPhone" class="form-control" placeholder="请输入负责人联系电话">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备安装地址</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentAddress2" class="form-control" placeholder="请输入设备安装地址">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备IP</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentIp" class="form-control" placeholder="请输入设备IP">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">设备序列号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="equipmentSeq" class="form-control" placeholder="请输入设备序列号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装区</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="area">
+                                    <option value="">请选择区域</option>
+                                    <option value="1">A区域</option>
+                                    <option value="2">B区域</option>
+                                    <option value="3">C区域</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装街道</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="streetNo">
+                                    <option value="">请选择街道</option>
+                                    <option value="1">A街</option>
+                                    <option value="2">B街</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">安装小区</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <select id="villageNo">
+                                    <option value="">请选择小区</option>
+                                    <option value="1">A小区</option>
+                                    <option value="2">B小区</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-1">
+                        <label class="control-label blue">安装号/栋</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div>
+                            <input type="text" id="building" class="form-control" placeholder="请输入安装号/栋">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3 col-xs-offset-1">
+                        <label class="control-label blue">安装单元</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <div>
+                            <input type="text" id="entrence" class="form-control" placeholder="请输入安装单元">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="saveMDeviceInfo()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-2.1.3.min.js"></script>
+<!--left-sidebar-town 左侧列表-->
+<script type="text/javascript" src="../js/sidebarTown.js"></script>
+<script src="../js/page.js"></script>
+<script src="../layer/layer.js"></script>
+<script>
+
+
+    $(function () {
+        //初始化
+        //分页查询
+        queryAreaPage(1);
+        //页数
+        // var GG = { queryAreaPage
+        //     "kk":function(mm){
+        //     }
+        // }
+        // $("#page").initPage(100,1,queryBussinessLabelPage;
+
+    });
+
+    function queryAreaPage(currentPage) {
+        var pageSize = 10;
+        var equipmentName = $("#equipmentName").val();
+        var assetNo = $("#assetNo").val();
+        var equipmentPro = $("#equipmentPro").val();
+        var equipmentAddress = $("#equipmentAddress").val();
+        var data = JSON.stringify({
+            "pageSize": pageSize, "currentPage": currentPage, "equipmentName": equipmentName,
+            "assetNo": assetNo, "equipmentPro": equipmentPro, "equipmentAddress": equipmentAddress
+        });
+        $.ajax({
+            url: "../mDeviceInfo/getMDeviceInfoList",
+            type: "post",
+            dataType: "json",
+            data: data,
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            html += "<td style='width:15%'>" + data.pageList[i].assetNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentModel + "</td>";
+                            html += "<td style='width:10%'>" + data.pageList[i].equipmentPro + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentAddress + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentIp + "</td>";
+                            html += "<td>";
+                            html += "<p class='blue operation'>";
+                            html += "<span onclick=updateLayerOpen('"+data.pageList[i].equipmentNo+"','"+data.pageList[i].assetNo+"'" +
+                                ",'"+data.pageList[i].equipmentName+"','"+data.pageList[i].equipmentModel+"','"+data.pageList[i].equipmentPro+"'" +
+                                ",'"+data.pageList[i].equipmentProPhone+"','"+data.pageList[i].equipmentAddress+"','"+data.pageList[i].equipmentIp+"'" +
+                                ",'"+data.pageList[i].equipmentSeq+"','"+data.pageList[i].areaNo+"','"+data.pageList[i].streetNo+"'" +
+                                ",'"+data.pageList[i].villageNo+"','"+data.pageList[i].building+"','"+data.pageList[i].entrence+"')>编辑</span>";
+                            html += "|";
+                            html += "<span onclick=deleteUserInfo()>删除</span>";
+                            html += "</p>";
+                            html += "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("table#main_table tbody").html(html);
+                    $("#page").initPage(data.totalCount, data.currentPage, queryAreaPage);
+                } else {
+                }
+            }
+        });
+    }
+
+
+    function deleteUserInfo(userNo) {
+
+        //eg1
+        layer.confirm('确定要删除此记录么', {
+            btn: ['确定', '取消'] //可以无限个按钮
+            , shadeClose: true //设置允许点遮罩关闭
+        }, function (index, layero) {
+
+            deleteUserInfoByUserNo(userNo);
+
+            $("#queryDistrictName").val("");
+            $("#areaList").val("");
+
+            queryAreaPage(1);
+
+            layer.close(index);
+        });
+    }
+
+    function deleteUserInfoByUserNo(userNo) {
+
+        $.ajax({
+            url: "../userinfo/deleteUserInfo",
+            type: "post",
+            dataType: "json",
+            data: {"userNo": userNo},
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function updateLayerOpen(equipmentNo,assetNo,equipmentName,equipmentModel,equipmentPro,equipmentProPhone
+        ,equipmentAddress,equipmentIp,equipmentSeq,areaNo,streetNo,villageNo,building,entrence) {
+        layerOpenOfUpdate(equipmentNo,assetNo,equipmentName,equipmentModel,equipmentPro,equipmentProPhone
+            ,equipmentAddress,equipmentIp,equipmentSeq,areaNo,streetNo,villageNo,building,entrence);
+    }
+
+    //修改弹层
+    function layerOpenOfUpdate(equipmentNo,assetNo,equipmentName,equipmentModel,equipmentPro,equipmentProPhone
+        ,equipmentAddress,equipmentIp,equipmentSeq,areaNo,streetNo,villageNo,building,entrence) {
+
+        var assetNo = $("#assetNo3").val(assetNo);
+        var equipmentName = $("#equipmentName3").val(equipmentName);
+        var equipmentModel = $("#equipmentModel3").val(equipmentModel);
+        var equipmentPro = $("#equipmentPro3").val(equipmentPro);
+        var equipmentProPhone = $("#equipmentProPhone3").val(equipmentProPhone);
+        var equipmentAddress = $("#equipmentAddress3").val(equipmentAddress);
+        var equipmentIp = $("#equipmentIp3").val(equipmentIp);
+        var equipmentSeq = $("#equipmentSeq3").val(equipmentSeq);
+        var areaNo = $("#areaNo3").val(areaNo);
+        var streetNo = $("#streetNo3").val(streetNo);
+        var villageNo = $("#villageNo3").val(villageNo);
+        var building = $("#building3").val(building);
+        var entrence = $("#entrence3").val(entrence);
+        var equipmentNo = $("#oldEquipmentNo").val(equipmentNo);
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payCons' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("div#pop-con-updateAreaName"),
+            success: function () {
+
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+                // $(".filejs").click(function(){
+                // 	$(".file").click();
+                // })
+            },
+        });
+    }
+
+
+    function updateMDeviceInfoByNo() {
+        var assetNo = $("#assetNo3").val();
+        var equipmentName = $("#equipmentName3").val();
+        var equipmentModel = $("#equipmentModel3").val();
+        var equipmentPro = $("#equipmentPro3").val();
+        var equipmentProPhone = $("#equipmentProPhone3").val();
+        var equipmentAddress = $("#equipmentAddress3").val();
+        var equipmentIp = $("#equipmentIp3").val();
+        var equipmentSeq = $("#equipmentSeq3").val();
+        var areaNo = $("#areaNo3").val();
+        var streetNo = $("#streetNo3").val();
+        var villageNo = $("#villageNo3").val();
+        var building = $("#building3").val();
+        var entrence = $("#entrence3").val();
+        var equipmentNo = $("#oldEquipmentNo").val();
+
+        if (isNull(equipmentName)) {
+            layer.alert('请输入设备名称');
+            return;
+        }
+
+        var formDate =
+            {
+                equipmentNo:equipmentNo,
+                assetNo: assetNo,
+                equipmentName: equipmentName,
+                equipmentModel: equipmentModel,
+                equipmentPro: equipmentPro,
+                equipmentProPhone: equipmentProPhone,
+                equipmentAddress: equipmentAddress,
+                equipmentIp: equipmentIp,
+                equipmentSeq: equipmentSeq,
+                areaNo: areaNo,
+                streetNo: streetNo,
+                villageNo: villageNo,
+                building: building,
+                entrence: entrence
+
+            };
+
+        $.ajax({
+            url: "../mDeviceInfo/updateMDeviceInfo",
+            type: "post",
+            dataType: "json",
+            data: formDate,
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+
+    }
+
+
+    //-------------------------------------------查询---------------------------------------
+
+    //添加弹层
+    function addAreaLayerOpen() {
+
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payConsAdd' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("div#pop-con-addArea"),
+            success: function () {
+                $("#addNewAreaName").val("");
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+            },
+        });
+    }
+
+    function saveMDeviceInfo() {
+        var assetNo = $("#assetNo2").val();
+        var equipmentName = $("#equipmentName2").val();
+        var equipmentModel = $("#equipmentModel").val();
+        var equipmentPro = $("#equipmentPro2").val();
+        var equipmentProPhone = $("#equipmentProPhone").val();
+        var equipmentAddress = $("#equipmentAddress2").val();
+        var equipmentIp = $("#equipmentIp").val();
+        var equipmentSeq = $("#equipmentSeq").val();
+        var areaNo = $("#areaNo").val();
+        var streetNo = $("#streetNo").val();
+        var villageNo = $("#villageNo").val();
+        var building = $("#building").val();
+        var entrence = $("#entrence").val();
+
+
+        if (isNull(equipmentName)) {
+            layer.alert('设备名称不能为空');
+            return;
+        }
+
+        var formDate =
+            {
+                assetNo: assetNo,
+                equipmentName: equipmentName,
+                equipmentModel: equipmentModel,
+                equipmentPro: equipmentPro,
+                equipmentProPhone: equipmentProPhone,
+                equipmentAddress: equipmentAddress,
+                equipmentIp: equipmentIp,
+                equipmentSeq: equipmentSeq,
+                areaNo: areaNo,
+                streetNo: streetNo,
+                villageNo: villageNo,
+                building: building,
+                entrence: entrence
+            };
+        $.ajax({
+            url: "../mDeviceInfo/saveMDeviceInfo",
+            type: "post",
+            dataType: "json",
+            data: formDate,
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            $("#addNewAreaName").val("");//清空
+                            layer.closeAll();
+                        }
+                    });
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function isNull(value) {
+        return value == null || value === "" || value === undefined;
+    }
+
+    var data = [{"value": "A区域"}, {"value": "B区域"}, {"value": "C区域"}];
+
+    function loadAreaNo() {
+
+        for (var i = 0; i < data.length; i++) {
+
+        }
+    }
+
+</script>
+</body>
+</html>
+

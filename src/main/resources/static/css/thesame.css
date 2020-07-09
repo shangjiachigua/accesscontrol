@@ -1,0 +1,84 @@
+.border-box{ -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -o-box-sizing:border-box; box-sizing:border-box; }
+.box-shadows{
+	-moz-box-shadow:0px 2px 10px rgba(204,204,204,0.5); 
+	-webkit-box-shadow:0px 2px 10px rgba(204,204,204,0.5); 
+	box-shadow:0px 2px 10px rgba(204,204,204,0.5);
+}
+.blue-shadows{
+	-moz-box-shadow:0px 2px 10px rgba(72,174,249,0.5); 
+	-webkit-box-shadow:0px 2px 10px rgba(72,174,249,0.5); 
+	box-shadow:0px 2px 10px rgba(72,174,249,0.5);
+}
+.green-shadows{
+	-moz-box-shadow:0px 2px 10px rgba(89,192,136,0.5); 
+	-webkit-box-shadow:0px 2px 10px rgba(89,192,136,0.5); 
+	box-shadow:0px 2px 10px rgba(89,192,136,0.5);
+}
+.red-shadows{
+	-moz-box-shadow:0px 2px 10px rgba(231,126,111,0.5); 
+	-webkit-box-shadow:0px 2px 10px rgba(231,126,111,0.5); 
+	box-shadow:0px 2px 10px rgba(231,126,111,0.5);
+}
+.yellow-shadows{
+	-moz-box-shadow:0px 2px 10px rgba(249,195,114,0.5); 
+	-webkit-box-shadow:0px 2px 10px rgba(249,195,114,0.5); 
+	box-shadow:0px 2px 10px rgba(249,195,114,0.5);
+}
+
+
+.ellipsis{
+	display:-webkit-box !important;
+	overflow:hidden;
+    text-overflow:ellipsis;
+	word-break:break-all;
+	-webkit-box-orient:vertical;
+	-webkit-line-clamp:2;/*溢出隐藏保留2行*/
+}	
+.smallimg{
+	width:100%;
+	height:0;
+    padding-bottom: 100%;
+    overflow:hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    background-size:cover;
+}
+.linear-gradient{
+	background: -webkit-linear-gradient(left, #7DBA74, #368D63);
+    background: -o-linear-gradient(left, #7DBA74, #368D63); 
+    background: -moz-linear-gradient(left, #7DBA74, #368D63);
+    background: linear-gradient(to right, #7DBA74, #368D63); 
+}
+input,textarea{ outline:none; }
+select:-moz-focusring {  
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+a:focus, a:hover {
+    color: #23527c;
+    text-decoration: none;
+}
+.border-top{ border-top: 1px solid #F6F6F6; }
+.padding{ padding: 0; }
+.margin{ margin: 0; }
+.pad15px{ padding: 15px; }
+.none{ display: none; }
+.textCenter{ text-align: center;}
+.blue{ color:#1D9BF7}
+.bgBlue{ background-color:#1D9BF7 }
+.bgLightblue{ background-color:#00D7E9}
+
+
+.bgRed{ background-color:#E77E6F }
+.bgGreen{ background-color:#59C088 }
+.bgYellow{ background-color:#F9C372 }
+.red{ color:#EF4343}
+.green{ color:#00B07D}
+.darkGray{color:#666} /*深灰*/
+.lightGray{color:#9c9c9c} /*浅灰*/
+.lightGray1{ color:#E3E3E3}
+.bgGray{ background-color:#E3E3E3}
+
+

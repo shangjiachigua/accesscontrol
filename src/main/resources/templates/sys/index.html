@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>springBoot框架模版</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="${request.contextPath}/statics/images/favicon.ico">
+    <link rel="stylesheet" href="${request.contextPath}/statics/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="${request.contextPath}/statics/css/layuimini.css" media="all">
+    <link rel="stylesheet" href="${request.contextPath}/statics/css/public.css" media="all">
+    <link rel="stylesheet" href="${request.contextPath}/statics/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <!--[if lt IE 9]>
+    <script src="${request.contextPath}/statics/js/html5.min.js"></script>
+    <script src="${request.contextPath}/statics/js/respond.min.js"></script>
+    <![endif]-->
+    <style id="layuimini-bg-color">
+    </style>
+    <style type="text/css">
+        div#changePasswordDiv .layui-input,div#changePasswordDiv .layui-select{width: 80%;}
+        .layui-form-select .layui-edge{right: 22%;}
+        .layui-form-select dl{min-width: 80%;}
+        .layuimini-form>.layui-form-item>.layui-form-label {
+            width: 80px !important;
+        }
+        .layuimini-form>.layui-form-item>.layui-input-block {
+            margin-left: 100px !important;
+        }
+    </style>
+</head>
+<body class="layui-layout-body layuimini-all">
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header header">
+        <div class="layui-logo">
+        </div>
+        <a>
+            <div class="layuimini-tool"><i title="展开" class="fa fa-outdent" data-side-fold="1"></i></div>
+        </a>
+
+        <ul class="layui-nav layui-layout-left layui-header-menu layui-header-pc-menu mobile layui-hide-xs">
+        </ul>
+        <ul class="layui-nav layui-layout-left layui-header-menu mobile layui-hide-sm">
+            <li class="layui-nav-item">
+                <a href="javascript:;"><i class="fa fa-list-ul"></i> 选择模块</a>
+                <dl class="layui-nav-child layui-header-mini-menu">
+                </dl>
+            </li>
+        </ul>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item mobile layui-hide-xs" lay-unselect>
+                <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
+            </li>
+            <li class="layui-nav-item layuimini-setting">
+                <a href="javascript:;">${userName}</a>
+                <dl class="layui-nav-child">
+                    <!--<dd>
+                        <a href="javascript:void(0);" data-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料</a>
+                    </dd>-->
+                    <dd>
+                        <a href="javascript:void(0);" id="changePassWordA" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
+                    </dd>
+                    <dd>
+                        <a href="javascript:;" class="login-out">退出登录</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item layuimini-select-bgcolor mobile layui-hide-xs">
+                <a href="javascript:;" data-bgcolor="配色方案"><i class="fa fa-ellipsis-v"></i></a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll layui-left-menu">
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-card layuimini-page-header layui-hide-xs layui-hide">
+            <div class="layui-breadcrumb" id="layuimini-page-header">
+                <a><cite>菜单管理</cite></a>
+            </div>
+        </div>
+        <div class="layuimini-content-page">
+        </div>
+    </div>
+
+</div>
+
+<!--百度统计代码-开始 正式使用请删除-->
+<script>
+    var _hmt = _hmt || [];
+    (function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?d97abf6d61c21d773f97835defbdef4e";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm, s);})();
+</script>
+<!--百度统计代码-结束-->
+
+<script src="${request.contextPath}/statics/lib/layui-v2.5.5/layui.js?v=1.0.4" charset="utf-8"></script>
+<script src="${request.contextPath}/statics/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'layer', 'layuimini'], function () {
+        var $ = layui.jquery,
+            element = layui.element,
+            layer = layui.layer,
+            layuimini = layui.layuimini;
+
+        layuimini.init('${request.contextPath}/sys/menu/getData');
+        //layuimini.init('${request.contextPath}/statics/api/init.json');
+
+        $('.login-out').on("click", function (e) {
+            window.location.href = '${request.contextPath}/outLogin';
+        });
+        var changePasswordHtml = '<div id="changePasswordDiv" class="layuimini-main"><div class="layui-form layuimini-form"><div class="layui-form-item"><label class="layui-form-label required">新密码</label><div class="layui-input-block"><input type="password" id="password" name="password" maxlength="20" lay-verify="required" lay-reqtext="密码不能为空" class="layui-input"></div></div><div class="layui-form layuimini-form"><div class="layui-form-item"><label class="layui-form-label required">确认密码</label><div class="layui-input-block"><input type="password"  lay-verify="required" lay-reqtext="确认密码不能为空" id="passwordTwo" class="layui-input"></div></div><div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button><button class="layui-btn" id="closeChangePassword">取消</button></div></div></div></div>';
+        $("a#changePassWordA").on("click",function (e) {
+            var cpIndex = layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['400px', '300px'], //宽高
+                title:"修改密码",
+                closeBtn:0,
+                content: changePasswordHtml,
+                success:function (e) {
+                    var cpForm = $("div#changePasswordDiv");
+                    $("button#closeChangePassword",cpForm).unbind().on("click",function (e) {
+                        layer.close(cpIndex);
+                    })
+                    layui.use(['form', 'table'], function () {
+                        var form = layui.form
+
+                        /**
+                         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+                         */
+                        form.render();
+
+                        // 当前弹出层，防止ID被覆盖
+                        var parentIndex = layer.index;
+
+                        //监听提交
+                        form.on('submit(saveBtn)', function (data) {
+                            var pw = $("input#password",cpForm).val();
+                            var pwc = $("input#passwordTwo",cpForm).val();
+                            if(pw == pwc) {
+                                var index = layer.alert("是否确认修改？", {
+                                    title: '提示信息：',
+                                    btn: ["确认", "取消"],
+                                    btn2: function () {
+                                        layer.close(index);
+                                        layer.close(parentIndex);
+                                    }
+                                }, function () {
+                                    // 关闭弹出层
+                                    layer.close(index);
+                                    layer.close(parentIndex);
+                                    var field = data.field;
+                                    $.ajax({
+                                        url: "${request.contextPath}/sys/user/changePassword",
+                                        type: "post",
+                                        dataType: "json",
+                                        data: field,
+                                        success: function (result) {
+                                            layer.alert(result.msg, {
+                                                title: '提示信息：',
+                                                btn: ["确认"],
+                                                yes: function (i) {
+                                                    layer.close(i);
+                                                    if (result.code == "0000") {
+                                                        window.location.href = '${request.contextPath}/outLogin';
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    })
+                                    console.info(field)
+                                });
+                            }else{
+                                layer.alert("两次输入密码不一致！", {
+                                    title: '提示信息：',
+                                    btn: ["确认" ],
+                                    yes:function (j) {
+                                        layer.close(j);
+                                    }
+                                });
+                            }
+                            return false;
+                        });
+
+                    });
+                }
+            });
+        })
+
+        layuimini.listen();
+
+    });
+</script>
+</body>
+</html>

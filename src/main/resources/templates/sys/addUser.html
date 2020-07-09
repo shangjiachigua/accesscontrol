@@ -1,0 +1,124 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" maxlength="10" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入姓名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">角色</label>
+            <div class="layui-input-block">
+                <select name="roleId" lay-verify="required" lay-reqtext="角色不能为空" class="layui-select">
+                    <option value="">请选择角色</option>
+                    <#list roles as role>
+                        <option value="${role.roleId}">${role.roleName}</option>
+                    </#list>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="userName" maxlength="20" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="passWord" maxlength="20" lay-verify="required" lay-reqtext="密码不能为空" placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">密码确认</label>
+            <div class="layui-input-block">
+                <input type="password" name="passWordConfirm" maxlength="20" lay-verify="required" lay-reqtext="密码确认不能为空" placeholder="请再次确认输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">手机号</label>
+            <div class="layui-input-block">
+                <input type="text" name="mobile" lay-verify="required|number|phone" lay-reqtext="手机号不能为空" placeholder="请输入手机号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电子邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" maxlength="50" lay-verify="email" name="email" placeholder="请输入电子邮箱" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("是否确认提交？", {
+                title: '提示信息：',
+                btn:["确认","取消"],
+                btn2:function () {
+                    layer.close(index);
+                    layer.close(parentIndex);
+                }
+            }, function () {
+                // 关闭弹出层
+                layer.close(index);
+                layer.close(parentIndex);
+                var field = data.field;
+                var pw = field.passWord;
+                var pw2 = field.passWordConfirm;
+                if(pw == pw2) {
+                    $.ajax({
+                        url: "${request.contextPath}/sys/user/addUser",
+                        type: "post",
+                        dataType: "json",
+                        data: field,
+                        success: function (result) {
+                            layer.alert(result.msg, {
+                                title: '提示信息：',
+                                btn: ["确认"],
+                                yes: function (i) {
+                                    layer.close(i);
+                                    if (result.code == "0000") {
+                                        $("button#searchButton").trigger("click");
+                                    }
+                                }
+                            });
+                        }
+                    })
+                }else{
+                    layer.alert("两次输入密码不一致！", {
+                        title: '提示信息：',
+                        btn: ["确认" ],
+                        yes:function (j) {
+                            layer.close(j);
+                        }
+                    });
+                }
+            });
+
+
+            return false;
+        });
+
+    });
+</script>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/headCss.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/leftSidebar.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/rightCon.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/thesame.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/page.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/popUp.css"/>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+
+<section class="">
+    <!--right-Sidebar-con-->
+    <div class="right-Sidebar-con border_box">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <select id="equipmentName">
+
+                                </select>
+                            </div>
+                            <div class="form-group relative">
+                                <select id="type">
+                                    <option value="">请选择开门类型</option>
+                                    <option value="1">刷卡开门</option>
+                                    <option value="2">人脸开门</option>
+                                </select>
+                            </div>
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="userName" class="form-control pr30px" placeholder="姓名">
+                            </div>
+                            <div class="form-group relative">
+                                <input value="" type="text" id="start" placeholder="开始时间" class="test-item1"/>
+                            </div>
+                            <div class="form-group relative">
+                                <input value="" type="text" id="end" placeholder="结束时间" class="test-item1"/>
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="queryAreaPage(1)">查询</p>
+                            </div>
+
+                            <!--<div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="addAreaLayerOpen()">新增</p>
+                            </div>-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table" id="main_table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>姓名</th>
+                    <th>事件源</th>
+                    <th>设备编号</th>
+                    <th>类型</th>
+                    <th>事件时间</th>
+                    <th>联动信息</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- <tr>
+                    <td>金沙江路</td>
+                    <td>2015-05-12 14:00:00</td>
+                    <td>
+                        <p class="blue operation"><span>查看</span>|<span>编辑</span>|<span>删除</span></p>
+                    </td>
+                </tr> -->
+                </tbody>
+            </table>
+            <!--currentpage="1" numbercount="100"-->
+            <div class="textCenter relative page-con">
+                <!-- <div class="lightGray pl15px pt15px form-inline">
+                    <p class="form-group">共300条记录</p>
+                    <p class="form-group">
+                        <select class="form-control">
+                            <option>5</option>
+                            <option>2</option>
+                        </select>
+                    </p>
+                    <p class="form-group">页</p>
+                </div> -->
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page"></ul>
+                <!-- <div><input type="text" id="oldBussinessLabelNamess" class="form-control" placeholder="标签名称"></div> -->
+            </div>
+            <!--<div><ul class="page" maxshowpageitem="5" pagelistcount="10"  id="page1"></ul></div>-->
+        </div>
+    </div>
+
+</section>
+
+
+<!--编辑弹层-->
+<input type="text" id="oldUserInfo" style="display: none;">
+<div id="pop-con-updateAreaName" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户编辑</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">照片</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <img id="newUserPhoto" src="#" width="50px" height="50px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">姓名</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newname" class="form-control" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">性别</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <!--                                <input type="text" id="sex" class="form-control" placeholder="片区名称">-->
+                                <select id="newsex">
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">手机号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newphone" class="form-control" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">公司</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newgongsi" class="form-control" placeholder="请输入公司名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">职位</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="newzhiwei" class="form-control" placeholder="请输入职位">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="updateLableByLabelCode()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--添加弹层-->
+<div id="pop-con-addArea" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>门禁用户添加</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <form class="form-horizontal" role="form">
+                <div class="row pb15px">
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">照片</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="file" id="img_file"><img src="" alt="" id="img_id" style="width: 100px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">姓名</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="name" class="form-control" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">性别</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <!--                                <input type="text" id="sex" class="form-control" placeholder="片区名称">-->
+                                <select id="sex">
+                                    <option value="0">男</option>
+                                    <option value="1">女</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">手机号</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="phone" class="form-control" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">公司</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="gongsi" class="form-control" placeholder="请输入公司名">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label class="control-label blue">职位</label>
+                        </div>
+                        <div class="col-xs-7">
+                            <div>
+                                <input type="text" id="zhiwei" class="form-control" placeholder="请输入职位">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="saveArea()">保存</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-2.1.3.min.js"></script>
+<!--left-sidebar-town 左侧列表-->
+<script type="text/javascript" src="../js/sidebarTown.js"></script>
+<script src="../js/page.js"></script>
+<script src="../layer/layer.js"></script>
+<script src="../laydate/laydate.js"></script>
+<script>
+
+
+    $(function () {
+        //初始化
+        //分页查询
+        queryAreaPage(1);
+        //页数
+        // var GG = { queryAreaPage
+        //     "kk":function(mm){
+        //     }
+        // }
+        // $("#page").initPage(100,1,queryBussinessLabelPage;
+        loadEquipment();
+    });
+
+    function loadEquipment() {
+        $.ajax({
+            url: "../cardrecord/getequipmentName",
+            type: "get",
+            dataType: "json",
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                var str = "";
+                str += "<option value=\"\">请选择设备</option>";
+                for (var i = 0; i < data.pageList.length; i++) {
+                    str += "<option value='" + data.pageList[i].equipmentNo + "'>" + data.pageList[i].equipmentName + "</option>";
+                }
+                $("#equipmentName").html(str);
+            }
+        });
+    }
+
+    function queryAreaPage(currentPage) {
+        var pageSize = 10;
+        var userName = $("#userName").val();
+        var equipmentName = $("#equipmentName").val();
+        var type = $("#type").val();
+        var start = $("#start").val();
+        var end = $("#end").val();
+        var data = JSON.stringify({
+            "pageSize": pageSize, "currentPage": currentPage, "userName": userName, "equipmentName": equipmentName
+            , "type": type, "start": start, "end": end
+        });
+        $.ajax({
+            url: "../cardrecord/getUserInfoList",
+            type: "post",
+            dataType: "json",
+            data: data,
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].event + "</td>";
+                            html += "<td style='width:10%'>" + data.pageList[i].equipmentNo + "</td>";
+
+                            if (data.pageList[i].type == 1) {
+                                html += "<td style='width:15%'>刷卡开门</td>";
+                            } else if (data.pageList[i].type == 2) {
+                                html += "<td style='width:15%'>人脸开门</td>";
+                            }
+                            html += "<td style='width:15%'>" + data.pageList[i].openDoorTime + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].linkageInfo + "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("table#main_table tbody").html(html);
+                    $("#page").initPage(data.totalCount, data.currentPage, queryAreaPage);
+                } else {
+                }
+            }
+        });
+    }
+
+
+    function isNull(value) {
+        return value == null || value === "" || value === undefined;
+    }
+
+    lay('.test-item1').each(function () {
+        laydate.render({
+            elem: this,
+            trigger: 'click',
+            type: "date",
+            range: false,
+            /*value: '1989-10-14'*/
+        });
+    });
+
+</script>
+</body>
+</html>
+

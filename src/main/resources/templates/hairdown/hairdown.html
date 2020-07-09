@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/headCss.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/leftSidebar.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/rightCon.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/thesame.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/page.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/popUp.css"/>
+    <style type="text/css">
+    </style>
+    <script>
+        var ishasPermissionEdit = false;
+        var ishasPermissionDelete = false;
+        var ishasPermissionAll = false;
+    </script>
+</head>
+<body>
+<button id="notHair">未下发</button>
+<button id="notDown">未下载</button>
+<button id="down">已下载</button>
+<button id="downFail">下载失败</button>
+
+<section class="">
+    <!--right-Sidebar-con-->
+    <div class="right-Sidebar-con border_box" id="1">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" id="userName" class="form-control pr30px" placeholder="请输入姓名进行搜索">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="queryAreaPage(1)">查询</p>
+                            </div>
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr15px" onclick="HariAllOpen()">全部下发</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table" id="main_table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>照片</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>编号</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="notHairDownList">
+                </tbody>
+            </table>
+            <div class="textCenter relative page-con">
+                <ul class="page  inline-block" maxshowpageitem="5" pagelistcount="10" id="page"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-Sidebar-con border_box" style="display: none" id="2">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" class="form-control pr30px" id="notDownLoadName" placeholder="请输入姓名进行搜索">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="loadNotDownList(1)">查询</p>
+                            </div>
+
+                            <!--<div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr15px" onclick="addAreaLayerOpen()">全部下发</p>
+                            </div>-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>照片</th>
+                    <th>姓名</th>
+                    <th>编号</th>
+                    <th>设备</th>
+                    <th>下发时间</th>
+                    <th>下载时间</th>
+                </tr>
+                </thead>
+                <tbody id="notDownList">
+                </tbody>
+            </table>
+            <div class="textCenter relative page-con">
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page2"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-Sidebar-con border_box" style="display: none" id="3">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" class="form-control pr30px" id="downLoadSuceesName" placeholder="请输入姓名进行搜索">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="loadDownSuceess(1)">查询</p>
+                            </div>
+
+                            <!--<div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr15px" onclick="addAreaLayerOpen()">全部下发</p>
+                            </div>-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>照片</th>
+                    <th>姓名</th>
+                    <th>编号</th>
+                    <th>设备</th>
+                    <th>下发时间</th>
+                    <th>下载时间</th>
+                </tr>
+                </thead>
+                <tbody id="downsucess">
+                </tbody>
+            </table>
+            <div class="textCenter relative page-con">
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page3"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-Sidebar-con border_box" style="display: none" id="4">
+        <div class="right-Sidebar-cen">
+            <div class="bgWhite box-shadows border-radius5 pad15px">
+                <form class="form-horizontal" role="form">
+                    <div class="row">
+                        <div class="col-xs-2 padding mr15px">
+                            <div class="form-group relative">
+                                <span class="glyphicon glyphicon-search form-control-feedback lightGray"></span>
+                                <input type="text" class="form-control pr30px" id="downLoadFailName" placeholder="请输入姓名进行搜索">
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-2 padding mr15px">
+                            <select class="form-control" id="areaList" name="areaList">
+
+                            </select>
+                        </div> -->
+                        <div class="col-xs-3 row padding">
+
+                            <div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr20px" onclick="loadDownFail(1)">查询</p>
+                            </div>
+
+                            <!--<div class="form-group col-xs-4">
+                                <p class="white border-radius3 bgBlue btn-one textCenter pl20px pr15px" onclick="addAreaLayerOpen()">全部下发</p>
+                            </div>-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="pad15px"></div>  <!-- 导入30个批次，共计30000 -->
+        <div class="table-con bgWhite border_box border-radius5 box-shadows">
+            <table class="table">
+                <thead>
+                <tr>
+                    <!--<th>序号</th>-->
+                    <th>照片</th>
+                    <th>姓名</th>
+                    <th>编号</th>
+                    <th>设备</th>
+                    <th>下发时间</th>
+                    <th>下载时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="loadownFail">
+                </tbody>
+            </table>
+            <div class="textCenter relative page-con">
+                <ul class="page inline-block" maxshowpageitem="5" pagelistcount="10" id="page4"></ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--下发单个弹层-->
+<input type="text" id="userNo" value="" style="display: none;">
+<input type="text" id="corporateNo" value="" style="display: none;">
+<input type="text" id="name" value="" style="display: none;">
+<input type="text" id="userPhoto" value="" style="display: none;">
+<div id="pop-con-addHariOne" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>请选择设备</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <table>
+                <tbody id="equipmentNameOne">
+                <tr>
+                    <td>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="saveHariOne()">确定</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--全部下发弹层-->
+<div id="pop-con-addArea" style="display: none;">
+    <div class="popUp bgWhite mt10px">
+        <ul class="pop-ul">
+            <li><span>请选择设备</span></li>
+            <p><span class="close-btn"><img src="../img/close.png"></span></p>
+        </ul>
+        <div class="form-con">
+            <table>
+                <tbody id="equipmentName" class="aaa">
+                <tr><input id="checkAll" type="checkbox" name="vehicle" value="Car" checked="checked"/>全部下发</tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="vehicle" value="Car" checked="checked"/> I have a car
+                        <input type="checkbox" name="vehicle" value="Car" checked="checked"/> I have a car
+                        <input type="checkbox" name="vehicle" value="Car" checked="checked"/> I have a car
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="btn-bot textCenter row">
+                <p class="col-xs-4 col-xs-offset-4">
+                    <span class="bgBlue white block" onclick="saveHariAll()">确定</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-2.1.3.min.js"></script>
+<!--left-sidebar-town 左侧列表-->
+<script type="text/javascript" src="../js/sidebarTown.js"></script>
+<script src="../js/page.js"></script>
+<script src="../layer/layer.js"></script>
+<script>
+    $(function () {
+        //加载设备
+        loadEquipment();
+        loadEquipment2();
+        $("#notHair").click(function () {
+            $("#2").css("display", "none");
+            $("#3").css("display", "none");
+            $("#4").css("display", "none");
+            $("#1").css("display", "");
+        });
+        $("#notDown").click(function () {
+            $("#2").css("display", "");
+            $("#1").css("display", "none");
+            $("#3").css("display", "none");
+            $("#4").css("display", "none");
+        });
+        $("#down").click(function () {
+            $("#2").css("display", "none");
+            $("#1").css("display", "none");
+            $("#3").css("display", "");
+            $("#4").css("display", "none");
+        });
+        $("#downFail").click(function () {
+            $("#2").css("display", "none");
+            $("#1").css("display", "none");
+            $("#3").css("display", "none");
+            $("#4").css("display", "");
+        });
+        //初始化
+        //分页查询
+        queryAreaPage(1);
+        //页数
+        // var GG = { queryAreaPage
+        //     "kk":function(mm){
+        //     }
+        // }
+        // $("#page").initPage(100,1,queryBussinessLabelPage;
+
+
+        $("#checkAll").click(function () {
+            if ($(this).prop("checked")) {
+                $("input[name=chk]:checkbox").each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $("input[name=chk]:checkbox").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+        loadNotDownList(1);
+
+        loadDownSuceess(1);
+
+        loadDownFail(1);
+
+    });
+
+    function loadDownFail(currentPage) {
+        var pageSize = 10;
+        var name = $("#downLoadFailName").val();
+        // var data = JSON.stringify({"userName": userName, "pageSize": pageSize, "currentPage": currentPage})
+        var data = {
+            userName: name,
+            pageSize: pageSize,
+            currentPage: currentPage
+        }
+        $.ajax({
+            url: "../hairdown/getDownFailList",
+            type: "get",
+            dataType: "json",
+            data: data,
+            // contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            // html += "<td style='display: none' class='ww' value='" + data.pageList[i].userNo + "'></td>"
+                            html += "<td style='width:15%'><img height='30px' src=" + data.pageList[i].userPhoto + "></td>";
+                            html += "<td style='width:10%'>" + data.pageList[i].userName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].creTime + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].downloadTime + "</td>";
+
+                            html += "<td>";
+                            html += "<p class='blue operation'>";
+                            html += "<span onclick=reHairDown('" + data.pageList[i].id + "')>重新下发</span>";
+                            html += "</p>";
+                            html += "</td>";
+                            html += "</tr>";
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("#loadownFail").html(html);
+                    $("#page4").initPage(data.totalCount, data.currentPage, loadDownFail);
+                } else {
+                }
+            }
+        });
+    }
+
+
+    function loadDownSuceess(currentPage) {
+        var pageSize = 10;
+        var name = $("#downLoadSuceesName").val();
+        // var data = JSON.stringify({"userName": userName, "pageSize": pageSize, "currentPage": currentPage})
+        var data = {
+            userName: name,
+            pageSize: pageSize,
+            currentPage: currentPage
+        }
+        $.ajax({
+            url: "../hairdown/getDownSucess",
+            type: "get",
+            dataType: "json",
+            data: data,
+            // contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            // html += "<td style='display: none' class='ww' value='" + data.pageList[i].userNo + "'></td>"
+                            html += "<td style='width:15%'><img height='30px' src=" + data.pageList[i].userPhoto + "></td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].creTime + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].downloadTime + "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("#downsucess").html(html);
+                    $("#page3").initPage(data.totalCount, data.currentPage, loadDownSuceess);
+                } else {
+                }
+            }
+        });
+    }
+
+    function loadNotDownList(currentPage) {
+        var pageSize = 10;
+        var name = $("#notDownLoadName").val();
+        // var data = JSON.stringify({"userName": userName, "pageSize": pageSize, "currentPage": currentPage})
+        var data = {
+            userName: name,
+            pageSize: pageSize,
+            currentPage: currentPage
+        }
+        $.ajax({
+            url: "../hairdown/getNotDownList",
+            type: "get",
+            dataType: "json",
+            data: data,
+            // contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            // html += "<td style='display: none' class='ww' value='" + data.pageList[i].userNo + "'></td>"
+                            html += "<td style='width:15%'><img height='30px' src=" + data.pageList[i].userPhoto + "></td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userName + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].equipmentNo + "</td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].creTime + "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("#notDownList").html(html);
+                    $("#page2").initPage(data.totalCount, data.currentPage, loadNotDownList);
+                } else {
+                }
+            }
+        });
+    }
+
+    function queryAreaPage(currentPage) {
+        var pageSize = 10;
+        var userName = $("#userName").val();
+        // var data = JSON.stringify({"userName": userName, "pageSize": pageSize, "currentPage": currentPage})
+        var data = {
+            userName: userName,
+            pageSize: pageSize,
+            currentPage: currentPage
+        }
+        $.ajax({
+            url: "../hairdown/getUserInfoList",
+            type: "get",
+            dataType: "json",
+            data: data,
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                if (data.code == "0000") {
+                    var html = "";
+                    if (data.pageList.length > 0) {
+                        for (var i = 0; i < data.pageList.length; i++) {
+                            html += "<tr>";
+                            html += "<td style='display: none' class='ww' value='" + data.pageList[i].userNo + "'></td>"
+                            html += "<td style='width:15%'><img height='30px' src=" + data.pageList[i].userPhoto + "></td>";
+                            html += "<td style='width:15%'>" + data.pageList[i].userName + "</td>";
+                            if (data.pageList[i].userSex == 0) {
+                                html += "<td style='width:10%'>男</td>";
+                            } else {
+                                html += "<td style='width:10%'>女</td>";
+                            }
+                            html += "<td style='width:15%'>" + data.pageList[i].userPhone + "</td>";
+                            html += "<td style='width:15%' class='tt' value='" + data.pageList[i].userNo + "'>" + data.pageList[i].userNo + "</td>";
+                            html += "<td>";
+                            //                  html += "<p class='blue operation'>";
+                            // html +="<span onclick=updateLayerOpen("+data.pageList[i].districtCode+'\,\''+data.pageList[i].districtName+"\')>编辑</span>";
+                            // html +="|";
+                            // html +="<span style='color:#ccc' onclick='deleteArea("+data.pageList[i].districtCode+")'>删除</span>";
+                            // html +="</p>";
+                            html += "<p class='blue operation'>";
+                            html += "<span onclick=hairDown('" + data.pageList[i].userNo + "','" + data.pageList[i].corporateNo + "'" +
+                                ",'" + data.pageList[i].userName + "','" + data.pageList[i].userPhoto + "')>下发</span>";
+                            html += "</p>";
+                            html += "</td>";
+                            html += "</tr>";
+
+                            //console.log(html);
+                        }
+                    } else {
+                        html = "<tr><td colspan='7'>暂无数据</td></tr>";
+                    }
+                    $("#notHairDownList").html(html);
+                    $("#page").initPage(data.totalCount, data.currentPage, queryAreaPage);
+                } else {
+                }
+            }
+        });
+    }
+
+    //
+    function hairDown(userNo, corporateNo, userName, userPhoto) {
+        $("#name").val(userName);
+        $("#userNo").val(userNo);
+        $("#corporateNo").val(corporateNo);
+        $("#userPhoto").val(userPhoto);
+
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payConsAdd' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("#pop-con-addHariOne"),
+            success: function () {
+                $("#addNewAreaName").val("");
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+            },
+        });
+    }
+
+    //-------------------------------------------查询---------------------------------------
+
+    //添加弹层
+    function HariAllOpen() {
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['700px', '']
+            , shade: 0.8
+            , id: 'payConsAdd' //设定一个id，防止重复弹出
+            /*,btn: ['确认支付']*/
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , shadeClose: true //设置允许点遮罩关闭
+            , content: $("#pop-con-addArea"),
+            success: function () {
+                $("#addNewAreaName").val("");
+                $(".close-btn").click(function () {
+                    layer.closeAll();
+                });
+            },
+        });
+    }
+
+
+    function isNull(value) {
+        return value == null || value === "" || value === undefined;
+    }
+
+    function loadEquipment() {
+        $.ajax({
+            url: "../cardrecord/getequipmentName",
+            type: "get",
+            dataType: "json",
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                var str = "";
+                str += "<tr>"
+                str += "<td>"
+                for (var i = 0; i < data.pageList.length; i++) {
+                    str += "<input type='checkbox' checked='checked' name='chk' value='" + data.pageList[i].equipmentNo + "'/>" + data.pageList[i].equipmentName + "";
+                }
+                str += "</td>"
+                str += "</tr>"
+                $(".aaa").html(str);
+            }
+        });
+    }
+
+    function loadEquipment2() {
+        $.ajax({
+            url: "../cardrecord/getequipmentName",
+            type: "get",
+            dataType: "json",
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                var str = "";
+                str += "<tr>"
+                str += "<td>"
+                for (var i = 0; i < data.pageList.length; i++) {
+                    str += "<input type='checkbox' name='chkOne' value='" + data.pageList[i].equipmentNo + "'/>" + data.pageList[i].equipmentName + "";
+                }
+                str += "</td>"
+                str += "</tr>"
+                $("#equipmentNameOne").html(str);
+            }
+        });
+    }
+
+
+    function saveHariOne() {
+        var userName = $("#name").val();
+        var userNo = $("#userNo").val();
+        var corporateNo = $("#corporateNo").val();
+        var userPhoto = $("#userPhoto").val();
+        var arr = new Array();
+        $('input[name="chkOne"]:checked').each(function () {
+            arr.push($(this).val());
+        })
+
+        if (arr.length <= 0) {
+            layer.alert('请选择设备');
+            return;
+        }
+
+        var data = JSON.stringify({
+            "userName": userName,
+            "userNo": userNo,
+            "corporateNo": corporateNo,
+            "userPhoto": userPhoto,
+            "equipmentNos": arr
+        })
+        $.ajax({
+            url: "../hairdown/addUserDownLoad",
+            type: "post",
+            dataType: "json",
+            data: data,
+            async: false,
+            contentType: "application/json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function saveHariAll() {
+
+
+        var arr = new Array();
+        $('input[name="chk"]:checked').each(function () {
+            arr.push($(this).val());
+        })
+
+        if (arr.length <= 0) {
+            layer.alert('请选择设备');
+            return;
+        }
+        var userDownload = new Array();
+        $('td[class="ww"]').each(function () {
+            userDownload.push($(this).attr("value"));
+        });
+
+        var data = JSON.stringify({"equipmentNos": arr, "userNos": userDownload})
+
+        // console.log(userDownload);
+        $.ajax({
+            url: "../hairdown/addUserDownLoadAll",
+            type: "post",
+            dataType: "json",
+            data: data,
+            async: false,
+            contentType: "application/json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+
+    function reHairDown(id) {
+        layer.confirm('确定要下发此记录么', {
+            btn: ['确定', '取消'] //可以无限个按钮
+            , shadeClose: true //设置允许点遮罩关闭
+        }, function (index, layero) {
+            reHarif(id);
+            loadDownFail(1);
+            layer.close(index);
+        });
+
+
+    }
+
+    //    重新下发
+    function reHarif(id) {
+        var data = {id: id};
+        $.ajax({
+            url: "../hairdown/reHairDown",
+            type: "put",
+            dataType: "json",
+            data: data,
+            async: false,
+            // contentType: "application/json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg',
+                        yes: function (index, layero) {
+                            layer.closeAll();
+                        }
+                    });
+                    queryAreaPage(1);
+                } else {
+                    layer.open({
+                        content: data.msg
+                        , skin: 'msg'
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
+

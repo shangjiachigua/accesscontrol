@@ -1,0 +1,203 @@
+<div class="layuimini-container layui-anim layui-anim-upbit">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="roleName" name="roleName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" id="searchButton" lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm data-add-btn"> 添加角色 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn"> 删除角色 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="authorize">授权</a>
+        </script>
+
+    </div>
+</div>
+
+<script>
+    var currentPage = "${currentPage}";
+    if(!(currentPage && parseInt(currentPage) > 0)){
+        currentPage = 1;
+    }else{
+        currentPage = parseInt(currentPage);
+    }
+    layui.use(['form', 'table','layuimini','element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            layuimini = layui.layuimini;
+
+        var tableEvent = table.render({
+            elem: '#currentTableId',
+            url: '${request.contextPath}/sys/role/getData',
+            toolbar: '#toolbarDemo',
+            method:"POST",
+            id:"roleTable",
+            defaultToolbar: [],
+            cols: [[
+                {type: "checkbox", width: 50, fixed: "left"},
+                {field: 'roleId', width: 200, title: '角色编号',hide:true},
+                {field: 'roleName', width: 200, title: '角色名称'},
+                {field: 'createUser', width: 200, title: '创建人'},
+                {field: 'createTime', width: 200, title: '创建时间',templet:function (data) {
+                    var val = data.createTime;
+                    if(val && $.trim(val)){return val.substring(0,4)+"-"+val.substring(4,6)+"-"+val.substring(6,8)+" "+val.substring(8,10)+":"+val.substring(10,12)+":"+val.substring(12,14);}else{return "";}
+                }},
+                {field: 'remark', width: 500, title: '备注'},
+                {title: '操作', minWidth: 50, templet: '#currentTableBar', fixed: "right", align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: {curr:currentPage}
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            //执行搜索重载
+            table.reload('roleTable', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                },
+                done: function(res, curr, count){ addAndDelete($,table)}
+            }, 'data');
+
+            return false;
+        });
+
+        addAndDelete($,table);
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var content = layuimini.getHrefContent('${request.contextPath}/sys/role/editRoleHtml?roleId='+data.roleId);
+                var openWH = layuimini.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                var data = obj.data;
+                layer.confirm('是否确定删除 '+data.roleName +' 角色？', function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url:'${request.contextPath}/sys/role/deleteRole',
+                        type:"post",
+                        dataType:"json",
+                        data:{"roleId":data.roleId},
+                        success:function (result) {
+                            layer.confirm(result.msg, function (msgIndex) {
+                                layer.close(msgIndex);
+                                if(result.code == '0000'){
+                                    $("button#searchButton").trigger("click");
+                                }
+                            })
+                        }
+                    })
+                });
+            }else if (obj.event === 'authorize') {
+                var data = obj.data;
+                var page = tableEvent.config.page.curr;
+                window.location.hash = "/sys/menu/authorizePage/"+page+"/"+data.roleId;
+            }
+        });
+    });
+
+    function addAndDelete($,table) {
+        // 监听添加操作
+        $(".data-add-btn").unbind().on("click", function () {
+
+            var content = layuimini.getHrefContent('${request.contextPath}/sys/role/addRoleHtml');
+            var openWH = layuimini.getOpenWidthHeight();
+
+            var index = layer.open({
+                title: '添加角色',
+                type: 1,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: true,
+                area: [openWH[0] + 'px', openWH[1] + 'px'],
+                offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                content: content,
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+
+            return false;
+        });
+
+        // 监听删除操作
+        $(".data-delete-btn").unbind().on("click", function () {
+            var checkStatus = table.checkStatus('roleTable')
+                , data = checkStatus.data;
+            if(data && data.length > 0){
+                var roleIds = "";
+                $.each(data,function (i,v) {
+                    roleIds += v.roleId + ",";
+                });
+                roleIds = roleIds.substring(0,roleIds.length - 1);
+                layer.confirm('是否确定删除当前选中角色？', function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url:'${request.contextPath}/sys/role/deleteRoles',
+                        type:"post",
+                        dataType:"json",
+                        data:{"roleIds":roleIds},
+                        success:function (result) {
+                            layer.confirm(result.msg, function (msgIndex) {
+                                layer.close(msgIndex);
+                                if(result.code == '0000'){
+                                    $("button#searchButton").trigger("click");
+                                }
+                            })
+                        }
+                    })
+                });
+            }else{
+                layer.confirm('当前未选中任何数据！', function (index) {
+                    layer.close(index);
+                });
+            }
+        });
+    }
+</script>

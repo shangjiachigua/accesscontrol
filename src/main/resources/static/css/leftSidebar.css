@@ -1,0 +1,23 @@
+@charset "utf-8";
+body,html{ width:100%; /*min-width: 1200px;*/ background-color:#F0EFF5; color:#323232}
+/***   左侧列表   ***/
+.left-sidebar::-webkit-scrollbar{ display: none;}
+.left-sidebar{ position: fixed; top:110px; left:0; width:18%; bottom: 0;/* min-width: 300px;*/overflow: hidden; }
+
+.left-sidebar-con{ padding: 10px 10px 10px 20px; margin-right: -20px; height: 100%; overflow: hidden; overflow-y: scroll; }
+.left-sidebar-con article p{ border-bottom:1px solid #ececec; padding:15px 25px;}
+.left-sidebar-con dt a{  display: block; font-size: 16px; color:#323232; padding-left:10px; font-weight: bold; letter-spacing: 2px; height:60px; line-height:60px; overflow: hidden; }
+.left-sidebar-con dl dt img{ width: 20px; vertical-align: -3px;}
+.left-sidebar-con dt i{ color:#CCCCCC; font-size:22px; }
+.left-sidebar-con dt i,.left-sidebar-con dt span{ float:left; margin-left:20px;}
+.left-sidebar-con dl li a{ display: block; padding-left:80px; height: 50px; line-height: 50px; position: relative }
+.left-sidebar-con dl li a.current{ background-color:#C2DEFF; color:#0176FE }
+.left-sidebar-con dl li a.current::after{
+	content: '';
+	display: block;
+	border-left:3px solid #0176FE;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}

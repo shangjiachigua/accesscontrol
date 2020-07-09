@@ -1,0 +1,26 @@
+
+.table > thead > tr > th{ border:0; }
+.popUp .pop-ul{ padding:20px; margin: 0;  border-bottom:1px solid #f6f6f6; overflow: hidden; }
+.popUp .pop-ul li{ line-height: 25px; float:left; width: 26%; font-size: 18px; font-weight: bold; }
+.popUp .pop-ul li.current{ color: #1D9BF7;  cursor: pointer;}
+.popUp .pop-ul li:hover{ cursor: pointer; }
+.popUp .pop-ul p{ float:right; margin: 0; }
+.popUp .form-con form{ width: 80%; margin: 30px auto; }
+.popUp .pop-ul img{ display: block; width: 24px; }
+.btn-bot{ padding:30px 0 20px; border-top:1px solid #f6f6f6;}
+.btn-bot span{ line-height: 40px; border-radius: 5px;  font-size: 16px; }
+.btn-bot span:hover{ cursor: pointer; }
+
+
+.table-con .table{ margin:0 }
+.table-con .table th,.table-con .table td{ padding:15px; text-align: center; }
+.table > thead > tr > th {
+    border-bottom: 0
+}
+.table > tbody > tr > td {
+    border-top:1px solid #F0EFF5;
+}
+.operation span{ margin: 0 10px; }
+.layui-layer{ border-radius: 8px !important; }
+
+
